@@ -1,0 +1,27 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "api_name": {
+      "value": "${MYWORKID_API_NAME}"
+    },
+    "backed_appreg_name": {
+      "value": "${MYWORKID_BACKED_APPREG_NAME}"
+    },
+    "frontend_appreg_name": {
+      "value": "${MYWORKID_FRONTEND_APPREG_NAME}"
+    },
+    "backend_client_id": {
+      "value": "${MYWORKID_BACKEND_CLIENT_ID}"
+    },
+    "frontend_client_id": {
+      "value": "${MYWORKID_FRONTEND_CLIENT_ID}"
+    },
+    "custom_domains_csv": {
+      "value": "${MYWORKID_CUSTOM_DOMAINS}"
+    },
+    "enable_app_service_managed_certificate_string": {
+      "value": "${MYWORKID_ENABLE_APP_SERVICE_MANAGED_CERTIFICATE}"
+    }
+  }
+}

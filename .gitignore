@@ -4,6 +4,12 @@
 **/appsettings.Development*.json
 
 .config/
+.azure/
+.bicep/
+.tmp/
+.artifacts/
+deploy/web/.azd/
+infra/.bicep/
 
 *.zip
 

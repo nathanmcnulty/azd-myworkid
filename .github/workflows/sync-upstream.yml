@@ -1,0 +1,126 @@
+name: Sync Upstream
+run-name: Sync Upstream
+
+concurrency:
+  group: "Sync Upstream"
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 6 * * *"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  UPSTREAM_REPOSITORY: glueckkanja/MyWorkID
+  UPSTREAM_BRANCH: main
+  SYNC_BRANCH: automation/sync-upstream-main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch origin and upstream
+        id: fetch
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git remote add upstream "https://github.com/${UPSTREAM_REPOSITORY}.git" 2>/dev/null || git remote set-url upstream "https://github.com/${UPSTREAM_REPOSITORY}.git"
+          git fetch origin "${GITHUB_REF_NAME:-main}" main
+          git fetch upstream "${UPSTREAM_BRANCH}"
+
+          if [ "${GITHUB_REPOSITORY}" = "${UPSTREAM_REPOSITORY}" ]; then
+            echo "skip_reason=repository_is_upstream" >> "$GITHUB_OUTPUT"
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if git merge-base --is-ancestor "upstream/${UPSTREAM_BRANCH}" "origin/main"; then
+            echo "skip_reason=already_up_to_date" >> "$GITHUB_OUTPUT"
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git checkout -B "${SYNC_BRANCH}" "origin/main"
+          if ! git merge --no-ff --no-edit "upstream/${UPSTREAM_BRANCH}"; then
+            git merge --abort || true
+            echo "merge_conflict=true" >> "$GITHUB_OUTPUT"
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          echo "upstream_sha=$(git rev-parse "upstream/${UPSTREAM_BRANCH}")" >> "$GITHUB_OUTPUT"
+          echo "sync_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Push sync branch
+        if: steps.fetch.outputs.has_changes == 'true'
+        run: |
+          git push --force-with-lease origin "${SYNC_BRANCH}"
+
+      - name: Create or update pull request
+        if: steps.fetch.outputs.has_changes == 'true'
+        uses: actions/github-script@v7
+        env:
+          UPSTREAM_SHA: ${{ steps.fetch.outputs.upstream_sha }}
+          SYNC_SHA: ${{ steps.fetch.outputs.sync_sha }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const head = `${owner}:${process.env.SYNC_BRANCH}`;
+            const base = "main";
+            const title = `chore(sync): merge ${process.env.UPSTREAM_REPOSITORY} ${process.env.UPSTREAM_BRANCH}`;
+            const body = [
+              "Automated upstream sync PR.",
+              "",
+              `- Upstream repository: \`${process.env.UPSTREAM_REPOSITORY}\``,
+              `- Upstream branch: \`${process.env.UPSTREAM_BRANCH}\``,
+              `- Upstream commit: \`${process.env.UPSTREAM_SHA}\``,
+              `- Sync branch commit: \`${process.env.SYNC_SHA}\``
+            ].join("\n");
+
+            const { data: pulls } = await github.rest.pulls.list({
+              owner,
+              repo,
+              state: "open",
+              head,
+              base
+            });
+
+            if (pulls.length > 0) {
+              await github.rest.pulls.update({
+                owner,
+                repo,
+                pull_number: pulls[0].number,
+                title,
+                body
+              });
+              core.info(`Updated PR #${pulls[0].number}`);
+              return;
+            }
+
+            const { data: pull } = await github.rest.pulls.create({
+              owner,
+              repo,
+              head: process.env.SYNC_BRANCH,
+              base,
+              title,
+              body
+            });
+            core.info(`Created PR #${pull.number}`);

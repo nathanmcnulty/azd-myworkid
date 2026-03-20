@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: myworkid
+metadata:
+  template: myworkid@0.0.1-beta
+infra:
+  provider: bicep
+  path: infra
+requiredVersions:
+  azd: ">= 1.23.7"
+hooks:
+  preprovision:
+    windows:
+      shell: pwsh
+      run: ./scripts/preprovision.ps1
+    posix:
+      shell: sh
+      run: ./scripts/preprovision.sh
+  postprovision:
+    windows:
+      shell: pwsh
+      run: ./scripts/postprovision.ps1
+    posix:
+      shell: sh
+      run: ./scripts/postprovision.sh
+  predown:
+    windows:
+      shell: pwsh
+      run: ./scripts/predown.ps1
+    posix:
+      shell: sh
+      run: ./scripts/predown.sh
+services:
+  web:
+    project: ./deploy/web
+    dist: ./.azd/dist
+    language: js
+    host: appservice
+    resourceGroup: ${AZURE_RESOURCE_GROUP}
+    resourceName: ${SERVICE_WEB_NAME}
+    hooks:
+      prepackage:
+        windows:
+          shell: pwsh
+          run: ./hooks/prepackage.ps1
+        posix:
+          shell: sh
+          run: ./hooks/prepackage.sh
