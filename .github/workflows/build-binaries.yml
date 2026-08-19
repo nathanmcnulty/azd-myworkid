@@ -27,18 +27,18 @@ jobs:
       run:
         working-directory: ${{env.PROJECT_ROOT_DIRECTORY}}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       # Load NuGetCache
       - name: Restore NuGet Cache
-        uses: actions/cache@v5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles(env.PROJECT_ROOT_DIRECTORY) }}
 
       # Setup .NET Core SDK
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -49,7 +49,7 @@ jobs:
         run: dotnet publish --configuration Release --no-build --output ./publish
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: binaries_${{github.sha}}
           path: ${{env.PROJECT_ROOT_DIRECTORY}}/publish
