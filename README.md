@@ -1,133 +1,85 @@
-# MyWorkID azd Template
+# Deploy MyWorkID with Azure Developer CLI
 
-This repository packages [MyWorkID](https://www.glueckkanja.com/en/security/my-work-id/) as an `azd`-first template. It keeps the existing MyWorkID application structure, but replaces the Terraform-led install flow with:
+Deploy [MyWorkID](https://www.glueckkanja.com/en/security/my-work-id/) to Azure and prepare its Microsoft Entra application objects through a guided `azd` experience.
 
-- `azd` + `Bicep` for Azure resource provisioning
-- `azd` hooks plus Microsoft Graph REST for Entra application and permission setup
-- two deployment modes:
-  - `releaseZip` (default): deploy the published `binaries.zip` artifact without needing the .NET SDK or Node.js locally
-  - `sourceBuild`: build and publish the checked-in source locally for contributor workflows
+This template helps an administrator:
 
-> [!IMPORTANT]
-> This deployment creates or updates Azure resources and Microsoft Entra application objects. Use the default `releaseZip` mode for administrator deployments, review the requested Entra permissions, and complete the tenant-specific steps in [Next Steps](#next-steps) before production use.
+- provision the MyWorkID Azure resources with Bicep;
+- create or update the required Microsoft Entra application objects;
+- deploy a published MyWorkID package without local build tooling;
+- configure authentication contexts, branding, Verified ID, TAP, and custom domains;
+- rerun DNS and certificate validation safely when propagation takes time.
+
+> This deployment changes Azure resources and Microsoft Entra application objects. Review the requested permissions and authentication-context values before deployment. Conditional Access, DNS, and optional Verified ID setup still require tenant-specific administrator review.
 
 ## Quickstart
 
-From a new empty directory, use an administrator with permission to create the Azure resources and the Entra objects required by the MyWorkID install flow:
+Install [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd) 1.23.7 or later. Use an account that can deploy the target Azure resources and create the required Entra objects.
+
+From a new empty directory, run:
 
 ```powershell
 azd init -t nathanmcnulty/azd-myworkid && azd up
 ```
 
-The default flow downloads the published MyWorkID package, so local .NET and Node.js tooling is not required. `sourceBuild` is an optional contributor path. `azd down` removes the Azure deployment; tenant application objects and externally managed DNS or policy configuration require explicit follow-up cleanup.
+The default `releaseZip` flow downloads the published MyWorkID package. Administrators do not need the .NET SDK, Node.js, or npm. Normal cached or browser authentication is used for Azure and Microsoft Entra.
 
-## Prerequisites
+## What gets deployed
 
-### Default `azd` flow
+```mermaid
+flowchart LR
+  Admin[Administrator] --> AZD[azd guided deployment]
+  AZD --> Azure[MyWorkID Azure resources]
+  AZD --> Entra[Entra applications and permissions]
+  Package[Published MyWorkID package] --> App[App Service deployment]
+  Azure --> App
+  Entra --> App
+```
 
-- Azure Developer CLI (`azd`) 1.23.7 or newer
-- An Azure account with permission to create the target Azure resources
-- Entra permissions equivalent to the original MyWorkID install flow
+The template uses `azd` and Bicep for Azure, lifecycle hooks for Entra configuration, and App Service for the application. The default release package comes from the upstream MyWorkID GitHub release; `sourceBuild` is an optional contributor workflow.
 
-### Optional `sourceBuild` flow
+## Administrator choices
 
-- .NET SDK 8
-- Node.js and npm
+| Choice | Default | When to change it |
+| --- | --- | --- |
+| Deployment mode | `releaseZip` | Use `sourceBuild` only when intentionally building checked-in source |
+| Release version | Latest published package | Pin a reviewed version for repeatable production deployment |
+| Authentication contexts | `c50`, `c51`, `c52` | Replace with the tenant's real context IDs before production use |
+| Custom domain | None | Enable after the required DNS records can be created |
+| Managed certificate | Enabled for a configured subdomain | Disable when TLS is managed externally |
+| Reduced-permission flags | Disabled | Use only after reviewing the functionality skipped by each flag |
 
-## Quick Start
+See the [configuration reference](docs/configuration.md) before changing these values.
 
-1. Authenticate:
+## Verify and finish
 
-   ```powershell
-   azd auth login
-   ```
+After `azd up`:
 
-1. Create or select an environment:
+1. Confirm the App Service and supporting Azure resources are healthy.
+2. Review the exact Entra application objects and permissions created or updated.
+3. Replace the sample authentication-context IDs before enabling their user journeys.
+4. Complete the [tenant-specific next steps](next-steps.md), including Conditional Access and optional Verified ID secrets.
+5. If a custom domain is waiting for DNS or HTTPS propagation, correct the records and rerun `azd up`.
 
-   ```powershell
-   azd env new
-   ```
+## Documentation
 
-1. Optionally override deployment mode:
+| Guide | Use it for |
+| --- | --- |
+| [Architecture](docs/architecture.md) | Components, deployment modes, and trust boundaries |
+| [Configuration](docs/configuration.md) | Deployment mode, permissions, domains, certificates, and reruns |
+| [Operations](docs/operations.md) | Verification, DNS completion, troubleshooting, and cleanup |
+| [Development](docs/development.md) | Source builds and contributor prerequisites |
+| [Agent-assisted deployment](docs/agent-assisted-deployment.md) | Safe administrator and agent authority boundaries |
+| [Tenant next steps](next-steps.md) | Conditional Access, authentication contexts, domains, and Verified ID |
 
-   ```powershell
-   azd env set MYWORKID_DEPLOY_MODE sourceBuild
-   azd env set MYWORKID_RELEASE_VERSION latest
-   ```
+## Cleanup
 
-1. Provision and deploy:
+Remove the Azure deployment with:
 
-   ```powershell
-   azd up
-   ```
+```powershell
+azd down --purge
+```
 
-The template creates or updates the MyWorkID Azure resources, creates the required Entra application objects, and deploys the web app package to App Service.
+Tenant application objects, Conditional Access policies, externally managed DNS, and other tenant configuration are not implicitly removed. Review the exact objects and follow [operations](docs/operations.md#cleanup) before deleting tenant state.
 
-## Configuration
-
-The template preserves the important MyWorkID deployment settings from the original Terraform flow, including:
-
-- App Service name and resource group
-- auth context IDs
-- custom domains
-- Verified ID settings
-- TAP settings
-- branding URLs
-- skip flags for reduced-permission environments
-
-`azd` will prompt for missing Bicep parameters during provisioning. Values that the Entra hook workflow needs before provisioning are stored in the environment file automatically.
-
-For first-run validation, the three auth context parameters default to `c50`, `c51`, and `c52`. Replace them with your real tenant auth context IDs before using the corresponding user journeys in production.
-
-If you provide `custom_domains`, the template now uses a two-pass flow for CNAME-based custom domains:
-
-- first run: the postprovision hook prints the TXT verification value and CNAME target, then sets `MYWORKID_CUSTOM_DOMAIN_CONFIGURATION_STATUS=awaitingDns`
-- second run: after DNS has propagated, rerun `azd provision`; the hook validates the TXT and CNAME records, fails fast if they still do not match, then adds the hostname binding
-- if `enable_app_service_managed_certificate=true` (default), the same rerun also requests an App Service managed certificate and completes the TLS binding when the certificate is ready
-- App Service managed certificate issuance commonly takes up to 10 minutes, so the hook now waits longer and tells you when Azure is still propagating that step
-- after the TLS binding is applied, the hook polls the public custom domain in 15-second intervals for up to about 5 minutes, validates the TLS handshake, and checks `https://<hostname>/api/general` for a healthy response before marking the domain as fully configured
-- if Azure is still propagating the certificate or hostname binding after that retry window, the hook sets `MYWORKID_CUSTOM_DOMAIN_CONFIGURATION_STATUS=awaitingHttpsValidation` so a later `azd provision` can finish the validation pass
-
-The automated binding flow currently assumes subdomains that use a CNAME record. Apex/root domains should still be completed manually.
-
-## Deployment Modes
-
-### `releaseZip`
-
-This is the default mode. The packaging hook downloads:
-
-`https://github.com/glueckkanja/MyWorkID/releases/<version>/download/binaries.zip`
-
-with `latest` used when `MYWORKID_RELEASE_VERSION` is not set.
-
-### `sourceBuild`
-
-This mode builds:
-
-- `src/MyWorkID.Client` with npm
-- `src/MyWorkID.Server` with `dotnet publish`
-
-and stages the combined output for `azd deploy`.
-
-## Permissions Notes
-
-The Entra automation uses Microsoft Graph through `azd auth token`. If the signed-in user lacks the required permissions, the hook scripts fail with a message that points to the missing operation. The following flags remain available:
-
-- `skip_actions_requiring_global_admin`
-- `skip_creation_backend_access_groups`
-- `allow_credential_operations_for_privileged_users`
-
-## Next Steps
-
-After deployment, finish the tenant-specific setup described in [next-steps.md](next-steps.md), especially:
-
-- Conditional Access and authentication context policies
-- optional custom domain configuration
-- optional Verified ID secret population
-
-For the original product documentation, see the upstream wiki:
-
-- https://github.com/glueckkanja/MyWorkID/wiki/Installation
-- https://github.com/glueckkanja/MyWorkID/wiki/Conditional-Access
-- https://github.com/glueckkanja/MyWorkID/wiki/Custom-Domain
-- https://github.com/glueckkanja/MyWorkID/wiki/Verified-ID
+This template packages an upstream product. Review the [MyWorkID documentation](https://github.com/glueckkanja/MyWorkID/wiki/Installation) and its licensing/support terms before production use.
