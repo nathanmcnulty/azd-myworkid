@@ -5,5 +5,17 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      github-actions:
+        patterns: ["*"]
+    open-pull-requests-limit: 5
     commit-message:
       prefix: "deps(ci)"
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      nuget:
+        patterns: ["*"]
+    open-pull-requests-limit: 5

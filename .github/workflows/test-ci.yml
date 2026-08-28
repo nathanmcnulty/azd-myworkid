@@ -14,16 +14,16 @@ jobs:
   run-tests:
     name: run tests
     runs-on: ubuntu-latest
-    continue-on-error: true
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Restore NuGet Cache
-        uses: actions/cache@v5
+        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('src/MyWorkID.Server') }}
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
         with:
           dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
       - name: Build
@@ -39,7 +39,7 @@ jobs:
           mkdir TestResults
           cp tests/MyWorkID.Server.IntegrationTests/TestResults/testResults.trx TestResults/Integration-Tests.trx
           cp tests/MyWorkID.Server.UnitTests/TestResults/testResults.trx TestResults/Unit-Tests.trx
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: success() || failure()
         with:
           name: testResults
