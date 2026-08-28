@@ -24,7 +24,7 @@
     "@radix-ui/react-toast": "^1.2.15",
     "@tailwindcss/vite": "^4.1.14",
     "async-mutex": "^0.4.1",
-    "axios": "^1.15.2",
+    "axios": "^1.18.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "jwt-decode": "^4.0.0",
@@ -32,7 +32,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.65.0",
-    "react-router-dom": "^6.30.3",
+    "react-router-dom": "^6.30.5",
     "sass": "^1.93.2",
     "tailwind-animate": "^0.2.10",
     "tailwind-merge": "^3.3.1",
@@ -49,9 +49,9 @@
     "eslint": "^8.57.1",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.24",
-    "postcss": "^8.5.13",
+    "postcss": "^8.5.26",
     "tailwindcss": "^4.1.14",
     "typescript": "^5.9.3",
-    "vite": "^7.3.2"
+    "vite": "^7.3.6"
   }
 }
