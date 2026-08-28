@@ -8,6 +8,19 @@ This repository packages [MyWorkID](https://www.glueckkanja.com/en/security/my-w
   - `releaseZip` (default): deploy the published `binaries.zip` artifact without needing the .NET SDK or Node.js locally
   - `sourceBuild`: build and publish the checked-in source locally for contributor workflows
 
+> [!IMPORTANT]
+> This deployment creates or updates Azure resources and Microsoft Entra application objects. Use the default `releaseZip` mode for administrator deployments, review the requested Entra permissions, and complete the tenant-specific steps in [Next Steps](#next-steps) before production use.
+
+## Quickstart
+
+From a new empty directory, use an administrator with permission to create the Azure resources and the Entra objects required by the MyWorkID install flow:
+
+```powershell
+azd init -t nathanmcnulty/azd-myworkid && azd up
+```
+
+The default flow downloads the published MyWorkID package, so local .NET and Node.js tooling is not required. `sourceBuild` is an optional contributor path. `azd down` removes the Azure deployment; tenant application objects and externally managed DNS or policy configuration require explicit follow-up cleanup.
+
 ## Prerequisites
 
 ### Default `azd` flow
