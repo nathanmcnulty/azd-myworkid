@@ -19,3 +19,19 @@ updates:
       nuget:
         patterns: ["*"]
     open-pull-requests-limit: 5
+  - package-ecosystem: "npm"
+    directory: "/src/MyWorkID.Client"
+    schedule:
+      interval: "weekly"
+    groups:
+      npm-client:
+        patterns: ["*"]
+    open-pull-requests-limit: 5
+  - package-ecosystem: "npm"
+    directory: "/deploy/web"
+    schedule:
+      interval: "weekly"
+    groups:
+      npm-deployment:
+        patterns: ["*"]
+    open-pull-requests-limit: 5
