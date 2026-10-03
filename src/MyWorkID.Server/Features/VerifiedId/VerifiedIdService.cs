@@ -90,7 +90,7 @@ namespace MyWorkID.Server.Features.VerifiedId
             }
             catch (HttpRequestException e)
             {
-                var responseContent = await response!.Content.ReadAsStringAsync(cancellationToken);
+                var responseContent = response is null ? string.Empty : await response.Content.ReadAsStringAsync(cancellationToken);
                 _logger.LogError(e, "Failed to create presentation request. Response: {ResponseContent}", responseContent);
                 if (responseContent.Contains(Strings.GRAPH_VERIFIED_ID_LICENSE_ERROR_MESSAGE, StringComparison.OrdinalIgnoreCase))
                 {
