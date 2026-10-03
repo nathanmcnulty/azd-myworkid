@@ -1,0 +1,170 @@
+{
+  "schemaVersion": "1.0.0",
+  "repository": "nathanmcnulty/azd-myworkid",
+  "sourceRevision": "d0e8a4f980fcd1229c9a232ef289a6530f459111",
+  "capturedAt": "2026-10-03",
+  "items": [
+    {
+      "id": "MWID-001",
+      "title": "Reconcile this backlog with current source and active work",
+      "kind": "discovery",
+      "priority": "P1",
+      "status": "ready",
+      "wave": 0,
+      "problem": "Plans and implementation evidence are spread across files; the captured source can change while other tasks work.",
+      "scope": [
+        "docs/backlog.json",
+        "docs/backlog.md",
+        "Existing roadmap, execution status, open issues and pull requests (read-only)"
+      ],
+      "acceptance": [
+        "Classify each candidate as implemented, still open, superseded or awaiting evidence; retain source links and reasons.",
+        "Inspect dirty state, remotes, worktrees and local environment presence without reading secrets; avoid duplicate work with active owners.",
+        "Resolve the actual offline validation commands and record exact current default-branch/working-tree provenance; do not copy historical live passes to newer code."
+      ],
+      "validation": [
+        "git status --short",
+        "git remote -v",
+        "git worktree list --porcelain",
+        "Read the applicable instructions and validation workflow; read gh issue list and gh pr list for the named repository using nathanmcnulty. Do not create or modify issues/PRs."
+      ],
+      "dependencies": [],
+      "authorization": "local-only",
+      "components": [],
+      "sources": [
+        "README.md",
+        "https://github.com/nathanmcnulty/azd-myworkid/pull/33",
+        "https://github.com/nathanmcnulty/azd-myworkid/pull/31",
+        "https://github.com/nathanmcnulty/azd-myworkid/pull/29"
+      ],
+      "evidence": [],
+      "blocker": null
+    },
+    {
+      "id": "MWID-002",
+      "title": "Qualify package, domain, authentication-context and optional Verified ID paths",
+      "kind": "verification",
+      "priority": "P1",
+      "status": "proposed",
+      "wave": 2,
+      "problem": "The deployed published package still depends on tenant-specific CA, DNS, certificate and credential setup.",
+      "scope": [
+        "docs/",
+        "scripts/",
+        "infra/"
+      ],
+      "acceptance": [
+        "Verify pinned package provenance and safe resume after DNS/certificate propagation.",
+        "Record auth-context/CA configuration and optional Verified ID issuance/presentation outcomes under exact authorization.",
+        "TAP values, tokens and recovery secrets remain outside logs; preserve unrelated applications/domains on cleanup."
+      ],
+      "validation": [
+        "Use the offline commands in the registered validation workflow; record the exact commands, revision and results before implementation is complete.",
+        "Run focused tests for changed behavior from tests/; fixtures do not prove live-service or endpoint behavior.",
+        "After separate authorization, retain redacted exact-target live evidence and cleanup results outside public Git. Do not execute live operations from this backlog alone."
+      ],
+      "dependencies": [],
+      "authorization": "tenant-write",
+      "components": [],
+      "sources": [
+        "README.md",
+        "AGENTS.md"
+      ],
+      "evidence": [],
+      "blocker": null
+    },
+    {
+      "id": "MWID-003",
+      "title": "Add resumable feature status with bounded deployment validation",
+      "kind": "feature",
+      "priority": "P2",
+      "status": "proposed",
+      "wave": 2,
+      "problem": "Administrators need to distinguish provisioning success from pending DNS, certificates and optional tenant setup.",
+      "scope": [
+        "scripts/",
+        "docs/",
+        "azd-components.lock.json",
+        "azd-permissions.json"
+      ],
+      "acceptance": [
+        "Feature status reports ready, pending, failed or skipped without copying secret/TAP values.",
+        "Read-only reruns can inspect current status without reapplying CA/DNS/credential writes.",
+        "Evaluate deployment-validation and candidate deployment-receipt with explicit adoption decision; feature permissions remain optional."
+      ],
+      "validation": [
+        "Use the offline commands in the registered validation workflow; record the exact commands, revision and results before implementation is complete.",
+        "Run focused tests for changed behavior from tests/; fixtures do not prove live-service or endpoint behavior."
+      ],
+      "dependencies": [],
+      "authorization": "local-only",
+      "components": [
+        "deployment-validation",
+        "deployment-receipt"
+      ],
+      "sources": [
+        "README.md"
+      ],
+      "evidence": [],
+      "blocker": null
+    },
+    {
+      "id": "MWID-004",
+      "title": "HTTP transport failure is masked by a null response dereference",
+      "kind": "discovery",
+      "priority": "P1",
+      "status": "proposed",
+      "wave": 0,
+      "problem": "Open report captured 2026-10-03 during execution reconciliation. Another code-quality task may own an active fix; inspect its PR and current source before dispatch.",
+      "scope": [
+        "Linked issue and current source (read-only)",
+        "Repository-local backlog evidence"
+      ],
+      "acceptance": [
+        "Read the linked issue and current default branch; classify the exact defect, current owner and evidence gap.",
+        "Record a current PR or verified resolution before selecting any implementation; preserve broader feature and live acceptance gates."
+      ],
+      "validation": [
+        "Read current issue and PR state using nathanmcnulty; do not modify or close issues during reconciliation.",
+        "Inspect dirty state and worktrees; resolve the exact current revision and relevant offline commands before implementation."
+      ],
+      "dependencies": [],
+      "authorization": "local-only",
+      "components": [],
+      "sources": [
+        "https://github.com/nathanmcnulty/azd-myworkid/issues/35"
+      ],
+      "evidence": [],
+      "blocker": null
+    },
+    {
+      "id": "MWID-005",
+      "title": "Require authenticated identity for Verified ID SignalR subscriptions",
+      "kind": "discovery",
+      "priority": "P1",
+      "status": "proposed",
+      "wave": 0,
+      "problem": "Open report captured 2026-10-03 during execution reconciliation. Another code-quality task may own an active fix; inspect its PR and current source before dispatch.",
+      "scope": [
+        "Linked issue and current source (read-only)",
+        "Repository-local backlog evidence"
+      ],
+      "acceptance": [
+        "Read the linked issue and current default branch; classify the exact defect, current owner and evidence gap.",
+        "Record a current PR or verified resolution before selecting any implementation; preserve broader feature and live acceptance gates."
+      ],
+      "validation": [
+        "Read current issue and PR state using nathanmcnulty; do not modify or close issues during reconciliation.",
+        "Inspect dirty state and worktrees; resolve the exact current revision and relevant offline commands before implementation."
+      ],
+      "dependencies": [],
+      "authorization": "local-only",
+      "components": [],
+      "sources": [
+        "https://github.com/nathanmcnulty/azd-myworkid/issues/34"
+      ],
+      "evidence": [],
+      "blocker": null
+    }
+  ]
+}
