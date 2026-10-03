@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "1.0",
+  "solutionId": "azd-myworkid",
+  "status": "implemented",
+  "coverage": "partial",
+  "reviewedOn": "2026-10-02",
+  "requirements": [
+    {
+      "resource": "https://graph.microsoft.com",
+      "kind": "application",
+      "permission": "IdentityRiskyUser.ReadWrite.All",
+      "principal": "managed-identity",
+      "phase": "runtime",
+      "feature": "core",
+      "defaultEnabled": true,
+      "scope": "tenant",
+      "rationale": "Roles assigned unless MYWORKID_SKIP_ACTIONS_REQUIRING_GLOBAL_ADMIN is selected.",
+      "evidenceState": "code",
+      "evidence": [
+        {
+          "path": "scripts/MyWorkID.Hooks.ps1",
+          "sha256": "f6ad35b8fd1b3b36b781b5dbffabba721ddc3e1af460a8d8aad1fa56ebf9ec70"
+        }
+      ]
+    },
+    {
+      "resource": "https://graph.microsoft.com",
+      "kind": "application",
+      "permission": "CustomSecAttributeAssignment.ReadWrite.All",
+      "principal": "managed-identity",
+      "phase": "runtime",
+      "feature": "core",
+      "defaultEnabled": true,
+      "scope": "tenant",
+      "rationale": "Roles assigned unless MYWORKID_SKIP_ACTIONS_REQUIRING_GLOBAL_ADMIN is selected.",
+      "evidenceState": "code",
+      "evidence": [
+        {
+          "path": "scripts/MyWorkID.Hooks.ps1",
+          "sha256": "f6ad35b8fd1b3b36b781b5dbffabba721ddc3e1af460a8d8aad1fa56ebf9ec70"
+        }
+      ]
+    },
+    {
+      "resource": "https://graph.microsoft.com",
+      "kind": "delegated",
+      "permission": "User.Read",
+      "principal": "frontend-user",
+      "phase": "runtime",
+      "feature": "core",
+      "defaultEnabled": true,
+      "scope": "tenant",
+      "rationale": "Delegated Graph grant to the frontend.",
+      "evidenceState": "code",
+      "evidence": [
+        {
+          "path": "scripts/MyWorkID.Hooks.ps1",
+          "sha256": "f6ad35b8fd1b3b36b781b5dbffabba721ddc3e1af460a8d8aad1fa56ebf9ec70"
+        }
+      ]
+    },
+    {
+      "resource": "entra-directory",
+      "kind": "entra-role",
+      "permission": "Authentication Administrator",
+      "principal": "managed-identity",
+      "phase": "runtime",
+      "feature": "credential-operations",
+      "defaultEnabled": true,
+      "scope": "tenant",
+      "rationale": "Default credential-operation role; privileged-user mode changes this role and requires review.",
+      "evidenceState": "code",
+      "evidence": [
+        {
+          "path": "scripts/MyWorkID.Hooks.ps1",
+          "sha256": "f6ad35b8fd1b3b36b781b5dbffabba721ddc3e1af460a8d8aad1fa56ebf9ec70"
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    "Azure RBAC scopes, operator/consent roles, cleanup, and optional connector permissions still need a full review.",
+    "Reduced-permission flags, Verified ID resource role IDs, privileged credential mode, bootstrap and teardown need full review."
+  ]
+}
