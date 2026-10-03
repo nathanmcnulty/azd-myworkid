@@ -78,7 +78,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.RegisterEndpoints(appAssembly);
 
-app.MapHub<VerifiedIdHub>("/hubs/verifiedId");
+app.MapHub<VerifiedIdHub>("/hubs/verifiedId").RequireAuthorization();
 app.MapFallbackToFile("/index.html");
 
 await app.RunAsync();

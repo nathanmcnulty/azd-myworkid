@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
+using Microsoft.Identity.Web;
 namespace MyWorkID.Server.Features.VerifiedId.SignalR
 {
     /// <summary>
@@ -7,6 +8,7 @@ namespace MyWorkID.Server.Features.VerifiedId.SignalR
     /// </summary>
     public class VerifiedIdHub : Hub<IVerifiedIdHub>
     {
+        private const string ConnectedUserIdKey = "VerifiedIdConnectedUserId";
         private readonly IVerifiedIdSignalRRepository _verifiedIdSignalRRepository;
 
         /// <summary>
@@ -24,12 +26,13 @@ namespace MyWorkID.Server.Features.VerifiedId.SignalR
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override Task OnConnectedAsync()
         {
-            var httpContext = Context.GetHttpContext();
-            if (httpContext == null || !httpContext.Request.Query.TryGetValue("access_token", out var userObjectId))
+            var userObjectId = Context.User?.GetObjectId();
+            if (!Guid.TryParse(userObjectId, out var objectId) || objectId == Guid.Empty)
             {
-                throw new InvalidOperationException("User object id is missing");
+                throw new InvalidOperationException("Authenticated user object id is missing");
             }
 
+            Context.Items[ConnectedUserIdKey] = userObjectId;
             _verifiedIdSignalRRepository.AddUser(userObjectId!, Context.ConnectionId);
             return base.OnConnectedAsync();
         }
@@ -41,13 +44,10 @@ namespace MyWorkID.Server.Features.VerifiedId.SignalR
         /// <returns>A task that represents the asynchronous operation.</returns>
         public override Task OnDisconnectedAsync(Exception? exception)
         {
-            var httpContext = Context.GetHttpContext();
-            string? userObjectId = null;
-            if (httpContext != null && httpContext.Request.Query.TryGetValue("access_token", out var userObjectIdRaw))
+            if (Context.Items.TryGetValue(ConnectedUserIdKey, out var connectedUserId) && connectedUserId is string userObjectId)
             {
-                userObjectId = userObjectIdRaw.ToString();
+                _verifiedIdSignalRRepository.RemoveUser(userObjectId, Context.ConnectionId);
             }
-            _verifiedIdSignalRRepository.RemoveUser(userObjectId, Context.ConnectionId);
             return base.OnDisconnectedAsync(exception);
         }
     }
