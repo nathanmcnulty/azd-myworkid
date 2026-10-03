@@ -1,6 +1,6 @@
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 import { Mutex } from "async-mutex";
-import { getMsalInfo } from "./msal-service";
+import { getBearerToken } from "./msal-service";
 
 const getVerifiedIdConnectionMutex = new Mutex();
 let verifiedIdConnectionCache: HubConnection | undefined = undefined;
@@ -11,11 +11,8 @@ export const getVerifiedIdConnection = async (): Promise<HubConnection> => {
       return verifiedIdConnectionCache;
     }
 
-    const msalInfo = await getMsalInfo();
-    const signedInUser = msalInfo.msalInstance.getAllAccounts()[0].localAccountId;
-
     verifiedIdConnectionCache = new HubConnectionBuilder()
-      .withUrl("/hubs/verifiedId", { accessTokenFactory: () => signedInUser })
+      .withUrl("/hubs/verifiedId", { accessTokenFactory: getBearerToken })
       .build();
 
     return verifiedIdConnectionCache;

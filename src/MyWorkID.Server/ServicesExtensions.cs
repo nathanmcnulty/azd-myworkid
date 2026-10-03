@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Tokens;
 using MyWorkID.Server.Options;
@@ -49,6 +50,23 @@ namespace MyWorkID.Server
                    policy.RequireAuthenticatedUser();
                    policy.AuthenticationSchemes.Add(Strings.VERIFIED_ID_CALLBACK_SCHEMA);
                });
+
+            // SignalR sends its bearer token in the query string for WebSocket requests.
+            // Accept that transport only on this hub; all other routes keep header-based auth.
+            services.PostConfigure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                var previous = options.Events.OnMessageReceived;
+                options.Events.OnMessageReceived = async context =>
+                {
+                    if (previous != null) await previous(context);
+                    if (string.IsNullOrEmpty(context.Token) &&
+                        context.Request.Path.Equals("/hubs/verifiedId", StringComparison.OrdinalIgnoreCase) &&
+                        context.Request.Query.TryGetValue("access_token", out var token))
+                    {
+                        context.Token = token;
+                    }
+                };
+            });
         }
 
         public static void ValidateOptionsOnStartup(this IServiceCollection services, IConfiguration configuration)
