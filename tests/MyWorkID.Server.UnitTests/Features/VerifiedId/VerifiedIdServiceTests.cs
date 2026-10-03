@@ -1,4 +1,5 @@
 ﻿using MyWorkID.Server.Features.VerifiedId;
+using MyWorkID.Server.Features.VerifiedId.Exceptions;
 using MyWorkID.Server.Features.VerifiedId.SignalR;
 using MyWorkID.Server.Options;
 using FluentAssertions;
@@ -13,6 +14,36 @@ namespace MyWorkID.Server.UnitTests.Features.VerifiedId
 {
     public class VerifiedIdServiceTests
     {
+        [Fact]
+        public async Task CreatePresentationRequest_TransportFailure_PreservesHttpException()
+        {
+            var transportError = new HttpRequestException("Connection reset");
+            using var httpClient = new HttpClient(new ThrowingHandler(transportError));
+            var options = Microsoft.Extensions.Options.Options.Create(new VerifiedIdOptions
+            {
+                BackendUrl = "https://example.test",
+                CreatePresentationRequestUri = "https://example.test/create",
+                DecentralizedIdentifier = "did:example:test",
+                JwtSigningKey = new string('x', 32)
+            });
+            var graphClient = new GraphServiceClient(Substitute.For<IRequestAdapter>());
+            var sut = new VerifiedIdService(httpClient, options, graphClient,
+                Substitute.For<IVerifiedIdSignalRRepository>(),
+                Substitute.For<IHubContext<VerifiedIdHub, IVerifiedIdHub>>(),
+                Substitute.For<ILogger<VerifiedIdService>>());
+
+            var exception = await Assert.ThrowsAsync<CreatePresentationException>(() =>
+                sut.CreatePresentationRequest("test-user", CancellationToken.None));
+
+            exception.InnerException.Should().BeSameAs(transportError);
+        }
+
+        private sealed class ThrowingHandler(HttpRequestException error) : HttpMessageHandler
+        {
+            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+                => Task.FromException<HttpResponseMessage>(error);
+        }
+
         [Fact]
         public void CreateSetTargetSecurityAttributeRequestBody_ReturnsCorrectBody()
         {
