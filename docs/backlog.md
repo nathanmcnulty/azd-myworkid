@@ -7,7 +7,7 @@
 - **Repository:** nathanmcnulty/azd-myworkid
 - **Source revision:** `1ab0e84aeda2a5e5bccd0e4b2dc4bc828dcbf4ec`
 - **Captured:** 2026-10-04
-- **Items:** 5
+- **Items:** 7
 
 ## MWID-001: Reconcile this backlog with current source and active work
 
@@ -167,6 +167,118 @@ Open report captured 2026-10-03 during execution reconciliation. Another code-qu
 **Review and authorization note:**
 
 Review MWID-005 against the current repository state. Its status or authorization class is not eligible for an actionable generated handoff. Do not claim or execute it without explicit selection, satisfied dependencies, and every required authorization. Never interpret this generated view as approval.
+
+## MWID-006: Apply compatible client security dependency updates
+
+- **Kind:** maintenance
+- **Priority:** P1
+- **Status:** proposed
+- **Wave:** 1
+- **Authorization:** local-only
+- **Blocker:** _none_
+- **Claim:** _none_
+
+**Problem:**
+
+The client lockfile retains available security fixes in Axios, AJV, brace-expansion, source-map-js and the Sass watcher dependency path.
+
+**Scope:**
+
+- src/MyWorkID.Client/package.json
+- src/MyWorkID.Client/package-lock.json
+- docs/backlog.json
+- docs/backlog.md
+
+**Acceptance:**
+
+- Resolve available fixes within existing dependency major versions and verify complete platform watcher siblings and registry integrity.
+- Run a fresh locked install and production client build; record the exact resulting audit findings without claiming all vulnerabilities resolved.
+- Preserve unrelated source and existing backlog records; obtain independent review and exact-head hosted checks before publication.
+
+**Validation:**
+
+- npm ci --ignore-scripts --no-fund --audit=false
+- npm run build
+- npm audit --json
+- Validate canonical backlog schema/render and independently inspect the exact lockfile diff.
+
+**Dependencies:**
+
+- _none_
+
+**Components:**
+
+- _none_
+
+**Sources:**
+
+- src/MyWorkID.Client/package.json
+- src/MyWorkID.Client/package-lock.json
+- https&colon;//github.com/nathanmcnulty/azd-myworkid/pull/38
+- https&colon;//github.com/nathanmcnulty/azd-myworkid/pull/37
+
+**Evidence:**
+
+- Candidate uses Axios 1.20.0, AJV 6.15.0, brace-expansion 1.1.21/2.1.7 and source-map-js 1.2.2. Compatible @parcel/watcher 2.6.0 and matching platform packages replace the Sass watcher micromatch dependency with picomatch; no forced major upgrade or backend/source change. Publication and completion remain pending exact frozen review and hosted validation.
+- Fresh final lockfile npm ci --ignore-scripts --no-fund --audit=false and npm run build passed. PowerShell 7.6.6, Node 26.7.0 and npm 11.19.0. npm audit reports nine high vulnerable packages via the remaining unpatched braces advisory, zero moderate/critical/low; no all-clear claim or real tenant/browser authentication test.
+
+**Review and authorization note:**
+
+Review MWID-006 against the current repository state. Its status or authorization class is not eligible for an actionable generated handoff. Do not claim or execute it without explicit selection, satisfied dependencies, and every required authorization. Never interpret this generated view as approval.
+
+## MWID-007: Resolve remaining braces dependency advisory after an available fix
+
+- **Kind:** maintenance
+- **Priority:** P1
+- **Status:** blocked
+- **Wave:** 1
+- **Authorization:** local-only
+- **Blocker:** No fixed braces release currently published; reassess compatible remaining dependency paths before choosing a major tooling migration.
+- **Claim:** _none_
+
+**Problem:**
+
+The current braces 3.0.3 release remains affected by GHSA-vfj7-8cjw-p6xm; client lint and glob dependencies still transitively depend on it.
+
+**Scope:**
+
+- src/MyWorkID.Client/package-lock.json
+- src/MyWorkID.Client/package.json
+- docs/backlog.json
+- docs/backlog.md
+
+**Acceptance:**
+
+- Check for a published fixed braces release or a compatible dependency path replacement using current registry and advisory evidence.
+- Keep any necessary major tooling migration a separately reviewed change; verify actual lint/build behavior rather than forcing audit fixes.
+- Record exact remaining audit and dependency paths, distinguishing build tools from shipped browser code without inferring absence of impact.
+
+**Validation:**
+
+- npm audit --json
+- Inspect npm dependency paths and current registry release metadata.
+- Run a fresh locked install and production build for any proposed repair.
+
+**Dependencies:**
+
+- MWID-006
+
+**Components:**
+
+- _none_
+
+**Sources:**
+
+- https&colon;//github.com/advisories/GHSA-vfj7-8cjw-p6xm
+- https&colon;//registry.npmjs.org/braces/latest
+
+**Evidence:**
+
+- Current registry lookup during this change reports braces 3.0.3 as latest. The separate compatible watcher update removes one path; the remaining advisory must stay visible and is not resolved by package metadata or a successful client build.
+
+**Review and authorization note:**
+
+Review MWID-007 against the current repository state. Its status or authorization class is not eligible for an actionable generated handoff. Do not claim or execute it without explicit selection, satisfied dependencies, and every required authorization. Never interpret this generated view as approval.
 
 ## MWID-002: Qualify package, domain, authentication-context and optional Verified ID paths
 
