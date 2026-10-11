@@ -225,7 +225,7 @@ Review MWID-002 against the current repository state. Its status or authorizatio
 
 - **Kind:** feature
 - **Priority:** P2
-- **Status:** proposed
+- **Status:** done
 - **Wave:** 2
 - **Authorization:** local-only
 - **Blocker:** _none_
@@ -268,7 +268,10 @@ Administrators need to distinguish provisioning success from pending DNS, certif
 
 **Evidence:**
 
-- _none_
+- Completed local feature acceptance through independently reviewed PR &num;43 &lpar;https&colon;//github.com/nathanmcnulty/azd-myworkid/pull/43&rpar;, final reviewed head 54d8b572eef26f9a034cfa7c61f9c4a1661810a2, merged main 599c10c407b1b0058cd182284d1139a2f77a77a9 and equal tree aa812aa7a0fecdebde75b2983dfe7b4b21f5afbf. All six exact-head checks succeeded, including read-only setup status and .NET tests. Post-main CodeQL run 38116663961 succeeded; Test CI is PR-only, so test evidence is inherited from the identical reviewed tree rather than claimed as a main test run. Integration receipt SHA 433706012D6C7FEBA47FB1C831BC8608C2D0CEB24AC570B79DB7F7596AE9207F.
+- Get-SetupStatus.ps1 reports fresh ready/pending/failed/skipped gates through the bounded MyWorkID.Status module. It binds selected account, tenant, subscription and exact application/resource identities; optional absent bindings and unavailable operator checks remain actionable pending. No CA/DNS/credential writes, provisioning replay, secret/TAP values or arbitrary provider error text are emitted. Optional status permissions are recorded with exact source hashes and explicit coverage gaps; metadata does not authorize grants.
+- docs/setup-status.md evaluates immutable Reference 277584b33fcae7d47113718aad6428abdc4bc50f and explicitly defers deployment-validation 1.1.1 and candidate deployment-receipt 0.2.1 because this read-only status interface has no deployment operation accounting. No vendored runtime dependency or invented deployment receipt is introduced. Registered PowerShell 7.6.6 tests passed 39 cases, including wire JSON, no-write dispatch, secret sentinels, CLI selector shape and JWT identity refusal. Isolated .NET 8 restore/Release build and 22 unit plus 72 integration tests passed; the earlier reviewed client npm ci/build and Bicep evidence remains applicable to unchanged client/infra code. CLI repair independent review SHA 430A367874F3FFFF98B398536B053F4B3546B74E4D025431EC9979B2ED41A685.
+- Additional bounded native proof passed actual cached CLI wrong-subscription refusal, one original cached-context call and zero downstream setup token/API/DNS/health dispatch under independently proven fail-closed guards, with before/after default context preserved. Native receipt SHA D1FF29523BCECE68536A2EB5BDEFC71019E0FD316CF635B433C9F41167C9D9D5 and independent review SHA 2FB2E2B5A88F584896357F62FFD533CF6E62F48D9FD3F3F6EDC82C5A5206BEB8. This is local feature acceptance and instrumented native refusal only&colon; no positive existing MyWorkID setup, effective permission, public DNS/TLS, delivery or user-journey acceptance is claimed. MWID-002 remains proposed for separate exact-target live qualification.
 
 **Review and authorization note:**
 
