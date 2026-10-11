@@ -172,7 +172,7 @@ Review MWID-005 against the current repository state. Its status or authorizatio
 
 - **Kind:** maintenance
 - **Priority:** P1
-- **Status:** proposed
+- **Status:** done
 - **Wave:** 1
 - **Authorization:** local-only
 - **Blocker:** _none_
@@ -219,8 +219,9 @@ The client lockfile retains available security fixes in Axios, AJV, brace-expans
 
 **Evidence:**
 
-- Candidate uses Axios 1.20.0, AJV 6.15.0, brace-expansion 1.1.21/2.1.7 and source-map-js 1.2.2. Compatible @parcel/watcher 2.6.0 and matching platform packages replace the Sass watcher micromatch dependency with picomatch; no forced major upgrade or backend/source change. Publication and completion remain pending exact frozen review and hosted validation.
-- Fresh final lockfile npm ci --ignore-scripts --no-fund --audit=false and npm run build passed. PowerShell 7.6.6, Node 26.7.0 and npm 11.19.0. npm audit reports nine high vulnerable packages via the remaining unpatched braces advisory, zero moderate/critical/low; no all-clear claim or real tenant/browser authentication test.
+- Compatible client fixes published via merged https&colon;//github.com/nathanmcnulty/azd-myworkid/pull/46&colon; reviewed head 22d469514c187327bb78895d5fc0a41443e6cd72 and main 090c4d4da64d4e8a0e4a9d0630bf980059812de9 have equal Git tree 3f5d031ce72d15f1e029320f5394dfbdc7534fd5. Axios 1.20.0, AJV 6.15.0, brace-expansion 1.1.21/2.1.7, source-map-js 1.2.2 and compatible @parcel/watcher 2.6.0/matching platform siblings are independently reviewed with exact upstream registry integrity. Upstream watcher no longer declares win32-ia32; removal of its stale lock entry is metadata reconciliation, not platform execution acceptance.
+- Independent validation of exact frozen client bytes&colon; fresh npm ci --ignore-scripts --no-fund --audit=false and npm run build passed; PowerShell 7.6.6, Node 26.7.0, npm 11.19.0. npm audit reports nine high vulnerable entries through remaining unpatched braces, zero moderate/critical/low. This is bounded available-compatible-fix completion, not a security all-clear. MWID-007 retains the separate blocked advisory/path decision; MWID-002 retains live setup acceptance. No tenant/browser authentication or Linux/macOS/ia32 execution is claimed.
+- Source freeze 6093C4EFD9F2C552145BB79CF76DC05A339B985F752EE8D146A21FD46D2A8ED7; independent review PASS 16601FD55459B2BA449B21347C20C95C8BDA719E6BFE0D58BF703767ECDE7117. All six exact PR-head checks passed &lpar;CodeQL 38119037184, dependency review 38119037376, Test CI 38119037171&rpar;; both exact main checks passed &lpar;CodeQL 38119255950, Build Binaries 38119255946&rpar;. Published integration receipt SHA256 80AC0A8AE87CD3EA363AF9A4706BDC41684DC8406C12991BAF101ECF3A1BA4EA records equal source/main trees and preserved reviewed source branch.
 
 **Review and authorization note:**
 
