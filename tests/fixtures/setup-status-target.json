@@ -1,0 +1,25 @@
+{
+  "account": "reader@example.invalid",
+  "accountObjectId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "tenantId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+  "subscriptionId": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+  "resourceGroup": "fixture-rg",
+  "siteName": "fixture-site",
+  "backendApplicationId": "11111111-1111-1111-1111-111111111111",
+  "backendClientId": "22222222-2222-2222-2222-222222222222",
+  "frontendApplicationId": "33333333-3333-3333-3333-333333333333",
+  "frontendClientId": "44444444-4444-4444-4444-444444444444",
+  "backendServicePrincipalId": "55555555-5555-5555-5555-555555555555",
+  "managedIdentityPrincipalId": "66666666-6666-6666-6666-666666666666",
+  "customDomains": ["login.example.invalid"],
+  "managedCertificate": true,
+  "authenticationContexts": ["c50", "c51", "c52"],
+  "accessGroups": [
+    {"id": "77777777-7777-7777-7777-777777777777", "roleId": "16f5de80-8ee7-46e3-8bfe-7de7af6164ed"},
+    {"id": "88888888-8888-8888-8888-888888888888", "roleId": "9262ab98-6c08-4e32-bae3-4c12d4ce2463"},
+    {"id": "99999999-9999-9999-9999-999999999999", "roleId": "13c4693c-84f1-43b4-85a2-5e51d41753ed"},
+    {"id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee", "roleId": "eeacf7de-5c05-4e21-a2be-a4d8e3435237"}
+  ],
+  "privilegedCredentials": false,
+  "verifiedIdEnabled": true
+}

@@ -11,6 +11,25 @@ env:
   DOTNET_CORE_VERSION: 8.0.x
 
 jobs:
+  setup-status:
+    name: read-only setup status (PowerShell 7.6+)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Ensure PowerShell 7.6 or later
+        shell: bash
+        run: |
+          if ! pwsh -NoProfile -Command 'if ($PSVersionTable.PSVersion -lt [version]"7.6") { exit 1 }'; then
+            sudo apt-get update
+            sudo apt-get install --only-upgrade -y powershell
+          fi
+          pwsh -NoProfile -Command 'if ($PSVersionTable.PSVersion -lt [version]"7.6") { throw "PowerShell 7.6+ required" }'
+      - name: Test setup status
+        shell: pwsh
+        run: |
+          Install-Module Pester -MinimumVersion 5.7 -Scope CurrentUser -Force
+          ./scripts/Test-SetupStatus.ps1
   run-tests:
     name: run tests
     runs-on: ubuntu-latest

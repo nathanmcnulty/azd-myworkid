@@ -63,6 +63,9 @@ After `azd up`:
 
 ## Documentation
 
+Inspect setup without rerunning provisioning using the optional PowerShell 7.6+
+[read-only setup status](docs/setup-status.md) command.
+
 | Guide | Use it for |
 | --- | --- |
 | [Architecture](docs/architecture.md) | Components, deployment modes, and trust boundaries |
