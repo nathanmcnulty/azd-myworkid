@@ -1,0 +1,132 @@
+{
+  "gaps": [
+    "This manifest covers only the optional read-only status feature. Existing provisioning hooks, runtime journeys and teardown still require a full separate permission reconciliation; historical dirty permission branches were not absorbed.",
+    "Effective Graph consent, supported operator role, and Azure RBAC remain unverified live; missing cached context or permissions yields pending status and never authorizes grants.",
+    "Verified ID issuer/signing-secret/security-attribute operation, user credential journeys and telemetry ingestion require separate authorized operator verification. No signing-secret or TAP read permission is requested by status."
+  ],
+  "reviewedOn": "2026-10-10",
+  "solutionId": "azd-myworkid",
+  "status": "implemented",
+  "coverage": "partial",
+  "schemaVersion": "1.0",
+  "requirements": [
+    {
+      "evidence": [
+        {
+          "sha256": "2620dc3351176a9960edb5b9f0ada587e6d17f4c787c2473c840c81fa28fed31",
+          "path": "scripts/MyWorkID.Status.psm1",
+          "documentationUrl": "https://learn.microsoft.com/en-us/graph/api/serviceprincipal-list-approleassignments"
+        }
+      ],
+      "feature": "readonly-setup-status",
+      "evidenceState": "code",
+      "defaultEnabled": false,
+      "permission": "Application.Read.All",
+      "rationale": "Read selected application/service-principal identities and runtime app-role assignments.",
+      "kind": "delegated",
+      "scope": "Selected tenant; exact application, managed-identity and group IDs; tenant policy metadata",
+      "phase": "discovery",
+      "resource": "Microsoft Graph",
+      "principal": "Selected cached CLI user"
+    },
+    {
+      "evidence": [
+        {
+          "sha256": "2620dc3351176a9960edb5b9f0ada587e6d17f4c787c2473c840c81fa28fed31",
+          "path": "scripts/MyWorkID.Status.psm1",
+          "documentationUrl": "https://learn.microsoft.com/en-us/graph/api/oauth2permissiongrant-list?view=graph-rest-1.0"
+        },
+        {
+          "path": "scripts/MyWorkID.Status.psm1",
+          "sha256": "2620dc3351176a9960edb5b9f0ada587e6d17f4c787c2473c840c81fa28fed31",
+          "documentationUrl": "https://learn.microsoft.com/en-us/graph/api/group-list-approleassignments?view=graph-rest-1.0"
+        }
+      ],
+      "feature": "readonly-setup-status",
+      "evidenceState": "code",
+      "defaultEnabled": false,
+      "permission": "Directory.Read.All",
+      "rationale": "Read delegated consent for the selected frontend client and selected journey-group identities/app-role assignments; requires a supported existing operator role. Group.Read.All alone does not authorize the group appRoleAssignments list endpoint.",
+      "kind": "delegated",
+      "scope": "Selected tenant; exact application, managed-identity and group IDs; tenant policy metadata",
+      "phase": "discovery",
+      "resource": "Microsoft Graph",
+      "principal": "Selected cached CLI user"
+    },
+    {
+      "evidence": [
+        {
+          "sha256": "2620dc3351176a9960edb5b9f0ada587e6d17f4c787c2473c840c81fa28fed31",
+          "path": "scripts/MyWorkID.Status.psm1",
+          "documentationUrl": "https://learn.microsoft.com/en-us/graph/api/authenticationcontextclassreference-get?view=graph-rest-1.0"
+        }
+      ],
+      "feature": "readonly-setup-status",
+      "evidenceState": "code",
+      "defaultEnabled": false,
+      "permission": "AuthenticationContext.Read.All",
+      "rationale": "Read the selected authentication contexts with an existing supported operator role.",
+      "kind": "delegated",
+      "scope": "Selected tenant; exact application, managed-identity and group IDs; tenant policy metadata",
+      "phase": "discovery",
+      "resource": "Microsoft Graph",
+      "principal": "Selected cached CLI user"
+    },
+    {
+      "evidence": [
+        {
+          "sha256": "2620dc3351176a9960edb5b9f0ada587e6d17f4c787c2473c840c81fa28fed31",
+          "path": "scripts/MyWorkID.Status.psm1",
+          "documentationUrl": "https://learn.microsoft.com/en-us/graph/api/conditionalaccessroot-list-policies?view=graph-rest-1.0"
+        }
+      ],
+      "feature": "readonly-setup-status",
+      "evidenceState": "code",
+      "defaultEnabled": false,
+      "permission": "Policy.Read.All",
+      "rationale": "Read enabled policy linkage to the selected contexts; this does not certify policy suitability.",
+      "kind": "delegated",
+      "scope": "Selected tenant; exact application, managed-identity and group IDs; tenant policy metadata",
+      "phase": "discovery",
+      "resource": "Microsoft Graph",
+      "principal": "Selected cached CLI user"
+    },
+    {
+      "evidence": [
+        {
+          "sha256": "2620dc3351176a9960edb5b9f0ada587e6d17f4c787c2473c840c81fa28fed31",
+          "path": "scripts/MyWorkID.Status.psm1",
+          "documentationUrl": "https://learn.microsoft.com/en-us/graph/api/rbacapplication-list-roleassignments?view=graph-rest-1.0"
+        }
+      ],
+      "feature": "readonly-setup-status",
+      "evidenceState": "code",
+      "defaultEnabled": false,
+      "permission": "RoleManagement.Read.Directory",
+      "rationale": "Read the selected managed identity directory role and root scope using an existing supported operator role.",
+      "kind": "delegated",
+      "scope": "Selected tenant; exact application, managed-identity and group IDs; tenant policy metadata",
+      "phase": "discovery",
+      "resource": "Microsoft Graph",
+      "principal": "Selected cached CLI user"
+    },
+    {
+      "evidence": [
+        {
+          "sha256": "2620dc3351176a9960edb5b9f0ada587e6d17f4c787c2473c840c81fa28fed31",
+          "path": "scripts/MyWorkID.Status.psm1"
+        }
+      ],
+      "feature": "readonly-setup-status",
+      "evidenceState": "code",
+      "defaultEnabled": false,
+      "permission": "Reader, or custom read-only role with Microsoft.Web/sites/read, Microsoft.Web/sites/hostNameBindings/read and Microsoft.Web/certificates/read",
+      "rationale": "Read hosting ownership, SNI binding and certificate metadata without app settings, keys or secrets.",
+      "kind": "azure-rbac",
+      "scope": "Exact selected subscription/resource group and App Service; certificate metadata in the same resource group",
+      "phase": "discovery",
+      "resource": "Azure Resource Manager",
+      "principal": "Selected cached CLI user"
+    }
+  ]
+}
