@@ -13,7 +13,7 @@
     {
       "evidence": [
         {
-          "sha256": "2620dc3351176a9960edb5b9f0ada587e6d17f4c787c2473c840c81fa28fed31",
+          "sha256": "26c667c06ab24c876ee15e91a87d972e91cd734df4bb4e20afc0a998cf17a2fe",
           "path": "scripts/MyWorkID.Status.psm1",
           "documentationUrl": "https://learn.microsoft.com/en-us/graph/api/serviceprincipal-list-approleassignments"
         }
@@ -32,13 +32,13 @@
     {
       "evidence": [
         {
-          "sha256": "2620dc3351176a9960edb5b9f0ada587e6d17f4c787c2473c840c81fa28fed31",
+          "sha256": "26c667c06ab24c876ee15e91a87d972e91cd734df4bb4e20afc0a998cf17a2fe",
           "path": "scripts/MyWorkID.Status.psm1",
           "documentationUrl": "https://learn.microsoft.com/en-us/graph/api/oauth2permissiongrant-list?view=graph-rest-1.0"
         },
         {
           "path": "scripts/MyWorkID.Status.psm1",
-          "sha256": "2620dc3351176a9960edb5b9f0ada587e6d17f4c787c2473c840c81fa28fed31",
+          "sha256": "26c667c06ab24c876ee15e91a87d972e91cd734df4bb4e20afc0a998cf17a2fe",
           "documentationUrl": "https://learn.microsoft.com/en-us/graph/api/group-list-approleassignments?view=graph-rest-1.0"
         }
       ],
@@ -56,7 +56,7 @@
     {
       "evidence": [
         {
-          "sha256": "2620dc3351176a9960edb5b9f0ada587e6d17f4c787c2473c840c81fa28fed31",
+          "sha256": "26c667c06ab24c876ee15e91a87d972e91cd734df4bb4e20afc0a998cf17a2fe",
           "path": "scripts/MyWorkID.Status.psm1",
           "documentationUrl": "https://learn.microsoft.com/en-us/graph/api/authenticationcontextclassreference-get?view=graph-rest-1.0"
         }
@@ -75,7 +75,7 @@
     {
       "evidence": [
         {
-          "sha256": "2620dc3351176a9960edb5b9f0ada587e6d17f4c787c2473c840c81fa28fed31",
+          "sha256": "26c667c06ab24c876ee15e91a87d972e91cd734df4bb4e20afc0a998cf17a2fe",
           "path": "scripts/MyWorkID.Status.psm1",
           "documentationUrl": "https://learn.microsoft.com/en-us/graph/api/conditionalaccessroot-list-policies?view=graph-rest-1.0"
         }
@@ -94,7 +94,7 @@
     {
       "evidence": [
         {
-          "sha256": "2620dc3351176a9960edb5b9f0ada587e6d17f4c787c2473c840c81fa28fed31",
+          "sha256": "26c667c06ab24c876ee15e91a87d972e91cd734df4bb4e20afc0a998cf17a2fe",
           "path": "scripts/MyWorkID.Status.psm1",
           "documentationUrl": "https://learn.microsoft.com/en-us/graph/api/rbacapplication-list-roleassignments?view=graph-rest-1.0"
         }
@@ -113,7 +113,7 @@
     {
       "evidence": [
         {
-          "sha256": "2620dc3351176a9960edb5b9f0ada587e6d17f4c787c2473c840c81fa28fed31",
+          "sha256": "26c667c06ab24c876ee15e91a87d972e91cd734df4bb4e20afc0a998cf17a2fe",
           "path": "scripts/MyWorkID.Status.psm1"
         }
       ],

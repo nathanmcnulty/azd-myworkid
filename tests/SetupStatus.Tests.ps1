@@ -217,6 +217,8 @@ Describe 'Native account and token selection' {
             $script:account=@{id=$script:target.subscriptionId;tenantId=$script:target.tenantId;user=@{name=$script:target.account;type='user'}}
             Mock az {
                 $global:LASTEXITCODE=0
+                $script:cliArgs=@($args)
+                if ($args -contains '--subscription' -and $args -contains '--tenant') { throw 'Azure CLI forbids combining subscription and tenant token selectors.' }
                 if ($args[1] -eq 'show') { return ($script:account|ConvertTo-Json -Depth 5 -Compress) }
                 $bytes=[Text.Encoding]::UTF8.GetBytes(($script:claims|ConvertTo-Json -Compress))
                 $part=[Convert]::ToBase64String($bytes).TrimEnd('=').Replace('+','-').Replace('/','_')
@@ -229,6 +231,19 @@ Describe 'Native account and token selection' {
         It 'rejects a different active user' { $script:account.user.name='foreign@example.invalid';{Get-MwidCachedContext $script:target}|Should -Throw 'AccountMismatch' }
         It 'rejects a non-user context' { $script:account.user.type='servicePrincipal';{Get-MwidCachedContext $script:target}|Should -Throw 'AccountMismatch' }
         It 'accepts a tenant and object-bound unexpired delegated audience token' { (Get-MwidReadToken $script:target graph)|Should -Match '^fixture\.' }
+        It 'uses only the explicit subscription selector for Graph token acquisition' {
+            $null=Get-MwidReadToken $script:target graph
+            ($script:cliArgs -join ' ') | Should -Be "account get-access-token --subscription $($script:target.subscriptionId) --resource https://graph.microsoft.com/ --output json --only-show-errors"
+            $script:cliArgs | Should -Not -Contain '--tenant'
+            Should -Invoke az -Times 1 -Exactly
+        }
+        It 'uses the explicit subscription and ARM resource without a conflicting tenant selector' {
+            $script:claims.aud='https://management.azure.com/'
+            $null=Get-MwidReadToken $script:target arm
+            ($script:cliArgs -join ' ') | Should -Be "account get-access-token --subscription $($script:target.subscriptionId) --resource https://management.azure.com/ --output json --only-show-errors"
+            $script:cliArgs | Should -Not -Contain '--tenant'
+            Should -Invoke az -Times 1 -Exactly
+        }
         It 'rejects wrong tenant tokens before any HTTP' { $script:claims.tid='foreign';{Get-MwidReadToken $script:target graph}|Should -Throw 'ReadUnavailable';Should -Invoke Invoke-WebRequest -Times 0 }
         It 'rejects wrong account object tokens' { $script:claims.oid='foreign';{Get-MwidReadToken $script:target graph}|Should -Throw 'ReadUnavailable' }
         It 'rejects ARM tokens for Graph reads' { $script:claims.aud='https://management.azure.com/';{Get-MwidReadToken $script:target graph}|Should -Throw 'ReadUnavailable' }

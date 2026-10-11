@@ -14,7 +14,7 @@ function Get-MwidCachedContext {
 function Get-MwidReadToken {
     param($Target, [ValidateSet('arm','graph')]$Service)
     $resource = if ($Service -eq 'arm') { 'https://management.azure.com/' } else { 'https://graph.microsoft.com/' }
-    $text = & az account get-access-token --subscription $Target.subscriptionId --tenant $Target.tenantId --resource $resource --output json --only-show-errors 2>$null
+    $text = & az account get-access-token --subscription $Target.subscriptionId --resource $resource --output json --only-show-errors 2>$null
     if ($LASTEXITCODE -ne 0) { throw 'ReadUnavailable' }
     try {
         $token = ($text | ConvertFrom-Json -DateKind String).accessToken
