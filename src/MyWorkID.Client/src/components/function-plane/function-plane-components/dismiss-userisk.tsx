@@ -22,7 +22,6 @@ export const DismissUserRisk = (props: TFunctionProps) => {
     if (props.comingFromRedirect) {
       dismissUserRisk();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.comingFromRedirect]);
 
   const triggerDismissUserRisk = () => {

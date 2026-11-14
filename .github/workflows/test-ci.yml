@@ -11,6 +11,26 @@ env:
   DOTNET_CORE_VERSION: 8.0.x
 
 jobs:
+  client-security:
+    name: client dependency mitigation and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: src/MyWorkID.Client
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '26'
+          cache: npm
+          cache-dependency-path: src/MyWorkID.Client/package-lock.json
+      - name: Install and verify dependency mitigation
+        run: npm ci --no-fund --audit=false
+      - name: Build client with regression checks
+        run: npm run build
+      - name: Lint client
+        run: npm run lint
   setup-status:
     name: read-only setup status (PowerShell 7.6+)
     runs-on: ubuntu-latest

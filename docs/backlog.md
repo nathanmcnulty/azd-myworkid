@@ -5,9 +5,9 @@
 
 - **Schema version:** 1.0.0
 - **Repository:** nathanmcnulty/azd-myworkid
-- **Source revision:** `1ab0e84aeda2a5e5bccd0e4b2dc4bc828dcbf4ec`
-- **Captured:** 2026-10-04
-- **Items:** 7
+- **Source revision:** `caefba33241b1883a6391105918245a38773437d`
+- **Captured:** 2026-10-16
+- **Items:** 8
 
 ## MWID-001: Reconcile this backlog with current source and active work
 
@@ -276,10 +276,80 @@ The current braces 3.0.3 release remains affected by GHSA-vfj7-8cjw-p6xm; client
 **Evidence:**
 
 - Current registry lookup during this change reports braces 3.0.3 as latest. The separate compatible watcher update removes one path; the remaining advisory must stay visible and is not resolved by package metadata or a successful client build.
+- 2026-10-16 registry and advisory readback still show braces 3.0.3 latest and no patched release. MWID-008 adds a separately reviewed local mitigation; published-version audit findings and this upstream-remediation task remain open.
 
 **Review and authorization note:**
 
 Review MWID-007 against the current repository state. Its status or authorization class is not eligible for an actionable generated handoff. Do not claim or execute it without explicit selection, satisfied dependencies, and every required authorization. Never interpret this generated view as approval.
+
+## MWID-008: Mitigate unpatched braces recursion in the locked client tools
+
+- **Kind:** maintenance
+- **Priority:** P1
+- **Status:** done
+- **Wave:** 1
+- **Authorization:** local-only
+- **Blocker:** _none_
+- **Claim:** _none_
+
+**Problem:**
+
+The unpatched braces package remains reachable through client build/lint tooling; upstream remediation is unavailable.
+
+**Scope:**
+
+- src/MyWorkID.Client/tools/dependency-patches/
+- src/MyWorkID.Client/package.json
+- src/MyWorkID.Client/package-lock.json
+- .github/workflows/test-ci.yml
+- docs/client-dependency-security.md
+- docs/backlog.json
+- docs/backlog.md
+- src/MyWorkID.Client/src/components/theme-context.ts
+- src/MyWorkID.Client/src/components/theme-provider.tsx
+- src/MyWorkID.Client/src/components/use-theme.tsx
+- src/MyWorkID.Client/src/components/function-plane/function-plane-components/dismiss-userisk.tsx
+
+**Acceptance:**
+
+- Vendor the reviewed bounded-recursion mitigation locally and verify every installed locked copy without upgrading unrelated dependencies.
+- Fail closed on changed upstream/helper bytes, versions or dependency layouts; cover ordinary patterns and adverse parse/AST inputs.
+- Prove a clean lifecycle installation, production client build and lint behavior; record audit findings without closing the upstream advisory.
+- Independently review the exact source mitigation and local validation; record clean hosted installation/build/lint as a PR merge gate.
+
+**Validation:**
+
+- npm ci --no-fund --audit=false
+- npm run test&colon;dependency-patches
+- npm run build
+- npm run lint
+- npm audit --json
+- Validate canonical backlog schema/render.
+
+**Dependencies:**
+
+- MWID-006
+
+**Components:**
+
+- _none_
+
+**Sources:**
+
+- docs/client-dependency-security.md
+- https&colon;//github.com/advisories/GHSA-vfj7-8cjw-p6xm
+- https&colon;//github.com/nathanmcnulty/azd-website/tree/90bd8a2a946828066490b675d35aee428d623a90/tools/dependency-patches
+
+**Evidence:**
+
+- Implemented from clean origin/main caefba33241b1883a6391105918245a38773437d. Vendored the reviewed website revision 90bd8a2a946828066490b675d35aee428d623a90 bounded-recursion helper and unchanged upstream-byte/patch-result transformations, with an additional exact single-copy lock/layout/installed-version guard. Package versions, integrity values and application authentication behavior are unchanged.
+- Clean normal npm ci applied the real upstream-to-patched transformation. All eight adverse/ordinary regression tests, TypeScript/Vite production build and zero-warning lint passed on PowerShell 7.6.6/Node 26.7.0/npm 11.19.0. Baseline lint showed only a stale disable directive and mixed theme context/component export; removing the directive and moving the unchanged context to its own module resolves both without suppressions. CI now runs clean client installation, build and lint.
+- Full npm audit still reports nine high affected entries propagated from GHSA-vfj7-8cjw-p6xm and zero low/moderate/critical entries. No upstream patch is published; MWID-007 remains blocked. This local source mitigation does not prove deployment/login acceptance or remove registry-version findings.
+- Done records the reviewed source implementation and local qualification. Commit/push and exact-head hosted checks remain PR delivery/merge gates; the draft must retain those gates until fresh hosted evidence exists.
+
+**Review and authorization note:**
+
+Review MWID-008 against the current repository state. Its status or authorization class is not eligible for an actionable generated handoff. Do not claim or execute it without explicit selection, satisfied dependencies, and every required authorization. Never interpret this generated view as approval.
 
 ## MWID-002: Qualify package, domain, authentication-context and optional Verified ID paths
 
